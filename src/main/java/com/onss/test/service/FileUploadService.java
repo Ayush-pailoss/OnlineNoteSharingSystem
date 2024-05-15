@@ -57,9 +57,9 @@ public class FileUploadService {
 			userEntity.setNotes(list);
 			notesRepository.save(notesEntity);
 
-			SubjectEntity subject = SubjectEntity.builder().subject(subjectRequest.getSubject()).build();
-			userEntity.setSubject(subject);
-			subjectRepository.save(subject);
+//			SubjectEntity subject = SubjectEntity.builder().subject(subjectRequest.getSubject()).build();
+//			userEntity.setSubject(subject);
+//			subjectRepository.save(subject);
 			userRepository.save(userEntity);
 			return new NotesResponseEntity("file saved sucessfully");
 		} else {
