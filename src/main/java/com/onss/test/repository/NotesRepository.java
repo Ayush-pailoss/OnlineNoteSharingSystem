@@ -6,6 +6,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.onss.test.repository.entity.NotesEntity;
+import java.util.List;
+
 @Repository
 public interface NotesRepository extends JpaRepository<NotesEntity, Integer> {
 //@Query("SELECT COUNT(n) FROM notes n WHERE n.subject = :subject")
@@ -13,6 +15,8 @@ public interface NotesRepository extends JpaRepository<NotesEntity, Integer> {
 	  Long countNotesByUsersEmail(@Param("email") String email);
 
 	void deleteByFilePath(String filePath);
+	
+    public  NotesEntity findByFilePath(String filePath);
 	  
 //	  @Query("SELECT COUNT(DISTINCT n.subject) FROM UserEntity u JOIN u.notes n WHERE u.id = :userId")
 //	  Long countDistinctSubjectsByUserId(@Param("userId") Long userId);	 

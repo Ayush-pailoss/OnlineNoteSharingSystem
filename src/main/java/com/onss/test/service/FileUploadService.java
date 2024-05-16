@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
@@ -38,31 +40,29 @@ public class FileUploadService {
 	@Autowired
 	private UserRepository userRepository;
 
-//	@Autowired
-//	private SubjectRepository subjectRepository;
-
+	private final Logger logger = LoggerFactory.getLogger(FileUploadService.class);
+	
 	public NotesResponseEntity uploadFile(String email, MultipartFile multipartFile,
 			NotesSavingRequest notesSavingRequest) {
 		UserEntity userEntity = userRepository.findByEmail(email);
 		String savedFilepath = saveFile(multipartFile);
 		if (savedFilepath != null) {
 			NotesEntity notesEntity = NotesEntity.builder().notesTitle(notesSavingRequest.getNotesTitle())
-					.description(notesSavingRequest.getDescription())
-					.filePath(savedFilepath)
-					.subject(notesSavingRequest.getSubject())
-					.user(userEntity)
-					.build();
+					.description(notesSavingRequest.getDescription()).filePath(savedFilepath)
+					.subject(notesSavingRequest.getSubject()).user(userEntity).build();
 			List<NotesEntity> list = new ArrayList<>();
 			list.add(notesEntity);
 			userEntity.setNotes(list);
 			notesRepository.save(notesEntity);
 
-//			SubjectEntity subject = SubjectEntity.builder().subject(subjectRequest.getSubject()).build();
+// 	  		SubjectEntity subject = SubjectEntity.builder().subject(subjectRequest.getSubject()).build();
 //			userEntity.setSubject(subject);
 //			subjectRepository.save(subject);
 			userRepository.save(userEntity);
+			logger.info("file is saved successfully");;
 			return new NotesResponseEntity("file saved sucessfully");
 		} else {
+			logger.warn(" file is not saved ");
 			return new NotesResponseEntity("failed to  save");
 		}
 	}
@@ -73,18 +73,16 @@ public class FileUploadService {
 		String uploadDirPath = UPLOAD_DIR;
 		String filePath = uploadDirPath + File.separator + filename;
 		Path path = Paths.get(uploadDirPath);
-		
-			try {
-				if (!Files.exists(path)) {
-					Files.createDirectories(path);
-				}	
-				Path targetPath = path.resolve(filename);
-				
-				Files.write(targetPath, file.getBytes());
+		try {
+			if (!Files.exists(path)) {
+				Files.createDirectories(path);
 			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
+			Path targetPath = path.resolve(filename);
+
+			Files.write(targetPath, file.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return filePath;
 	}
 
@@ -118,8 +116,8 @@ public class FileUploadService {
 		Path path = Paths.get(filePath);
 //		File file = new File(filePath);
 //		Path path = Paths.get("UPLOAD_DIR").resolve("filename");
-        return path;
-  
+		return path;
+
 	}
 
 // TO COUNT NUMBER OF SUBJECTS
@@ -136,15 +134,16 @@ public class FileUploadService {
 	@Transactional
 	public NotesResponseEntity removeFile(String fileName) {
 		String filePath = UPLOAD_DIR + File.separator + fileName;
-		        deleteFile(filePath);
-		        // Delete the entry from the database
-		        notesRepository.deleteByFilePath(filePath);
-				return new NotesResponseEntity(filePath);
-		    }
-		    private void deleteFile(String filePath) {
-		        File file = new File(filePath);
-		        if (file.exists()) {
-		            file.delete();
-		        }
-		    }	
+		deleteFile(filePath);
+		// Delete the entry from the database
+		notesRepository.deleteByFilePath(filePath);
+		return new NotesResponseEntity(filePath);
 	}
+
+	private void deleteFile(String filePath) {
+		File file = new File(filePath);
+		if (file.exists()) {
+			file.delete();
+		}
+	}
+}
