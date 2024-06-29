@@ -72,7 +72,6 @@ public class NotesController {
 		logInfo.info(" file upload successfully ");
 		return new NotesResponseEntity("file uploaded successfully");
 	}
-
 @GetMapping("/download")
 public Path getfilepath(@RequestParam("filename") String filename){
 	 return fileUploadService.downloadFile(filename) ;

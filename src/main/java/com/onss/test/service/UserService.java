@@ -23,10 +23,11 @@ public class UserService {
 //	USER SIGN UP SERVICE
 	public UsersResponseEntity saveUser(UserRegistrationRequest userRegistrationRequest) {
 		UserEntity userEntity = repo.findByEmailAndPhoneNo(userRegistrationRequest.getEmail(),userRegistrationRequest.getPhoneNo());
-		if (userEntity == null) {
+		if (userEntity.getEmail()  == null) {
 			UserEntity user2 = UserEntity.builder()
 							.fullName(userRegistrationRequest.getFullName())
-							.email(userRegistrationRequest.getEmail()).phoneNo(userRegistrationRequest.getPhoneNo())
+							.email(userRegistrationRequest.getEmail())
+							.phoneNo(userRegistrationRequest.getPhoneNo())
 							.password(userRegistrationRequest.getPassword())
 							.build();
 			              repo.save(user2);

@@ -1,7 +1,4 @@
 package com.onss.test.controller;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +18,6 @@ import jakarta.validation.Valid;
 @RequestMapping("/user")
 public class UserController {
 	
-	Logger logger =LoggerFactory.getLogger(UserController.class);
 	
 	@Autowired
 	UserService userService;
@@ -36,7 +32,6 @@ public class UserController {
 //	USER SIGN IN CONTROLLER
 	@PostMapping("/signin")
 	public ResponseEntity<String> loginUser(@Valid @RequestBody UserLoginRequest loginRequest ) {
-		 userService.login(loginRequest) ;
 		 return userService.login(loginRequest);
 	}
 	
